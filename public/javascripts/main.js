@@ -1,10 +1,16 @@
 $(function() {
-  const contactsTemplate = Handlebars.compile($("#contactsTemplate").html());   
-  const formTemplate = Handlebars.compile($("#formTemplate").html());
+  let contacts;
+  let contactsTemplate = Handlebars.compile($("#contactsTemplate").html());   
+  let formTemplate = Handlebars.compile($("#formTemplate").html());
+  
 
 
-  const ui = {
+
+
+  let ui = {
     // has templates properties here
+    $contactsGallery: $("#contactsGallery"),
+    $addContactForm: $("#addContactForm"),
 
     bindEventListeners: function() {
       $("button#addContact").on("click", this.showAddContactForm.bind(this)); // start new contact addition
@@ -17,42 +23,17 @@ $(function() {
     },
 
     populateContactsGallery: function() {
-      // called from api after api has succesfully grabbed all contacts
-      // upon invocation, this method displays all contact divs
-
-      /*
-      const contacts = this.contacts;
-      const $contactsGallery = $("div#contactsGallery");
-
-      $contactsGallery.html(contactsTemplate({contacts: contacts}));
+      if(contacts.length > 0) {
+        this.$contactsGallery.html(contactsTemplate({contacts: contacts}));
+      }
       this.showContactsGallery();
-      */
     },
 
     retrieveContacts: function() {
-      //makes request to api to tell it to make ajax request,
-      // when it does, it makes call back to ui to tell it to load page
-      //  via the populate contacts gallery method
-      //   most below code goes to api obj
-
       api.getAllContacts();
-
-      const event = jQuery.Event("contactsLoaded");
-      const self = this;
-
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", "/api/contacts");
-      xhr.send();
-      xhr.addEventListener("load", function(e) {
-        let contactData = this.response;
-
-        self.contacts = JSON.parse(contactData);
-        $("body").trigger(event);
-      });
     },
 
     showContactsGallery: function() {
-      // simple animator
       $("div#contactsGallery").slideDown(500);
     },
 
@@ -66,21 +47,21 @@ $(function() {
     },
 
     createAddContactForm: function() {
-      // should create this at ui init
-      const $addContactForm = $("#addContactForm");
-      $addContactForm.html(formTemplate({heading: "Add Contact", formType: "add"}));
+      this.$addContactForm.html(
+        formTemplate({heading: "Add Contact", formType: "add"})
+      );
     },
 
     createEditContactForm: function(data) {
       // called upon the click of an edit button, creates a contact form
       //  populating its default values with the values passed in via data param
 
-      const name = data.full_name;
-      const email = data.email;
-      const phoneNumber = data.phone_number
-      const tags = data.tags;
+      let name = data.full_name;
+      let email = data.email;
+      let phoneNumber = data.phone_number
+      let tags = data.tags;
 
-      const $editContactForm = $("#editContactForm");
+      let $editContactForm = $("#editContactForm");
 
       $editContactForm.html(formTemplate({
         heading: "Edit Contact",
@@ -105,8 +86,8 @@ $(function() {
     },
 
     verifyFormContent: function($form) {
-      const formElm = $form[0];
-      const contact = {
+      let formElm = $form[0];
+      let contact = {
         full_name: formElm[0].value,
         email: formElm[1].value,
         phone_number: formElm[2].value
@@ -121,21 +102,22 @@ $(function() {
 
     handleInvalidInput: function(e){
       e.preventDefault();
-      const $el = $(e.target);
+      let $el = $(e.target);
       $el.next().show();
     },
 
     refresh: function() {
       this.retrieveContacts();
-    }
+    },
 
     init: function() {
-      this.refresh();
       this.createAddContactForm();
-      this.createEditContactForm();
+      this.refresh();
+      //this.createAddContactForm();
+      //this.createEditContactForm();
       
-      this.bindEventListeners()
-      return this;
+      //this.bindEventListeners()
+      //return this;
     }
 
     /* responsibilities:
@@ -149,57 +131,50 @@ $(function() {
     */
   }
 
-  const app = {
+  let app = {
 
   }
 
-  const api = {
-    url: "localhost:3000/api/contacts",
+  let api = {
 
     getAllContacts: function() {
-      $.ajax(this.url { method: "GET" });
-
-
-
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", "/api/contacts");
-      xhr.send();
-      xhr.addEventListener("load", function(e) {
-        let contactData = this.response;
-
-        self.contacts = JSON.parse(contactData);
-        $("body").trigger(event);
-      });
-    }
-  }
-
-  const Contacts = {
-
-    
-    submitNewContact: function(e) {
-      e.preventDefault();
-      const self = this;
-      const $form = $(e.target).parent();
-      const result = this.verifyFormContent.call(this, $form);
-      if(!result) {
-        return false;
-      }
-      let json = JSON.stringify(result);
-      let xhr = new XMLHttpRequest();
-      xhr.open("POST", "api/contacts");
-      xhr.setRequestHeader("Content-Type", "json");
-      xhr.send(json);
-      xhr.addEventListener("load", function() {
-        self.retrieveContacts();
-        return true;
+      $.ajax("/api/contacts", {
+        method: "GET",
+        success: function(data, status) {
+          contacts = data;
+          ui.populateContactsGallery();
+        }
       });
     },
-    
+
+    saveAContact: function(data) {
+      // must be called from app obj, which will call it when ui validates submission form
+      //  and calls the app to submit the data.
+
+      $.ajax("/api/contacts", {
+        method: "POST",
+        data: data,
+        dataType: "json",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        success: function(data, status) {
+          ui.refresh();
+        }
+      });
+
+    },
+
+    deleteAContact: function() {
+
+    },
+
+    updateAContact: function() {
+
+    },
+
   }
 
-  const $body = $("body");
-  $body.on("contactsLoaded", Contacts.populateContactsGallery.bind(Contacts));
-
-  Contacts.init();
+  ui.init();
 
 });
