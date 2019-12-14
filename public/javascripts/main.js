@@ -2,54 +2,56 @@ $(function() {
   let contacts;
   let contactsTemplate = Handlebars.compile($("#contactsTemplate").html());   
   let formTemplate = Handlebars.compile($("#formTemplate").html());
-  
-
-
-
+  let nextId;
 
   let ui = {
     // has templates properties here
     $contactsGallery: $("#contactsGallery"),
-    $addContactForm: $("#addContactForm"),
+    $addContactForm:  $("#addContactForm"),
+    $editContactForm: $("#editContactForm"),
+    filter:       "",
+    selectedTags: [],
 
     bindEventListeners: function() {
-      $("button#addContact").on("click", this.showAddContactForm.bind(this)); // start new contact addition
-      $("input#searchBox"); // filter
-      $("#addContactSubmitButton").on("click", this.submitNewContact.bind(this)); // submit contact
+      $("button#addContact").on("click", this.showAddContactForm.bind(this));
+      $("#searchBox")[0].addEventListener("input", this.updateFilter.bind(this));
+      $("#addContactSubmitButton").on("click", this.submitNewContact.bind(this));
       $("#cancelButton").on("click", this.cancelContactCreation.bind(this)); // cancel edit/add
-      $("#editContactSubmitButton"); // submit edits
-      $("button#editContact"); // to edit individual contact
-      $("button#deletContact"); // to delete individual contact
+      $("#editContactSubmitButton");
+      //$("button#editContact"); // to edit individual contact
     },
 
-    populateContactsGallery: function() {
-      if(contacts.length > 0) {
-        this.$contactsGallery.html(contactsTemplate({contacts: contacts}));
-      }
-      this.showContactsGallery();
+    setNextId: function() {
+      let ids = contacts.map(obj => obj.id);
+      nextId = Math.max(...ids) + 1;
     },
 
-    retrieveContacts: function() {
-      api.getAllContacts();
-    },
-
-    showContactsGallery: function() {
-      $("div#contactsGallery").slideDown(500);
-    },
-
-    showAddContactForm: function() {
-      // simple animation
-
-      $("#contactsGallery").slideUp();
-      $("#addContactForm").fadeIn();
-
-      $("#addContactForm input").on("invalid", this.handleInvalidInput);
+    hideAddContactForm: () => {
+      $("#addContactForm").slideUp(500);
+      setTimeout(function() {
+        $("#contactsGallery").slideDown();
+      }, 500);
     },
 
     createAddContactForm: function() {
       this.$addContactForm.html(
         formTemplate({heading: "Add Contact", formType: "add"})
       );
+    },
+
+    startDeleteContact: function(e) {
+      let id = +$(e.target).closest("div").attr("id");
+      let result = window.confirm("Delete contact? " + id);
+      if (result) { app.deleteContact(id) };
+    },
+
+    getContactById: function(id) {
+      return contacts.find(contact => contact.id === id);
+    },
+
+    beginContactEdit: function(e) {
+      let contactId = +$(e.target).closest("div").attr("id");
+      createEditContactForm(getContactById(contactId));
     },
 
     createEditContactForm: function(data) {
@@ -61,9 +63,7 @@ $(function() {
       let phoneNumber = data.phone_number
       let tags = data.tags;
 
-      let $editContactForm = $("#editContactForm");
-
-      $editContactForm.html(formTemplate({
+      this.$editContactForm.html(formTemplate({
         heading: "Edit Contact",
         full_name: name,
         email: email,
@@ -76,34 +76,93 @@ $(function() {
 
     cancelContactCreation: function(e) {
       e.preventDefault();
-      $(e.target).parent()[0].reset();
-      $("#addContactForm").fadeOut();
-      setTimeout(function() {
-        $("#contactsGallery").slideDown();
-      }, 200);
-
       $("p.error").hide();
+      $(e.target).parent()[0].reset();
+      this.hideAddContactForm();
     },
 
-    verifyFormContent: function($form) {
-      let formElm = $form[0];
-      let contact = {
-        full_name: formElm[0].value,
-        email: formElm[1].value,
-        phone_number: formElm[2].value
-      };
-
-      if($form[0].checkValidity()) {
-        return contact;
-      } else {
-        return false;
+    getFormDataObject: function(form) {
+      return {
+        id: nextId,
+        full_name: form[0].value,
+        email: form[1].value,
+        phone_number: form[2].value
       }
     },
 
+    updateFilter: function(e) {
+      this.filter = e.target.value.trim();
+      this.populateContactsGallery();
+    },
+
+    filteredContacts: function() {
+      let filterStr = this.filter.toLowerCase();
+      return contacts.filter(contact => contact.full_name.toLowerCase().includes(filterStr));
+    },
+
+    populateContactsGallery: function() {
+      if(contacts.length <= 0) {
+        // add "no contacts" banner later
+        return;
+      }
+      let visibleContacts = contacts;
+      if(this.filter || this.selectedTags.length > 0) {
+        visibleContacts = this.filteredContacts();
+      }
+      this.$contactsGallery.html(contactsTemplate({contacts: visibleContacts}));
+      this.showContactsGallery();
+    },
+
+    retrieveContacts: function() {
+      api.getAllContacts();
+    },
+
+    showContactsGallery: function() {
+      let self = this;
+      this.$addContactForm.slideUp(500);
+      setTimeout(function() {
+        self.$contactsGallery.slideDown();
+      }, 500);
+    },
+
+    showAddContactForm: function() {
+      $("#contactsGallery").slideUp(500);
+      setTimeout(function() {
+        $("#addContactForm").slideDown();
+      }, 500)
+
+      $("#addContactForm input").on("invalid", this.handleInvalidInput);
+    },
+
+    validateForm: function(form) {
+      if(form.checkValidity()) {
+        return this.getFormDataObject(form);
+      }
+      return false;
+    },
+
     handleInvalidInput: function(e){
+      // this function will be the event handler for the 'invalid' event fired on the form (and its child inputs) and it will find the name of the input elm(s) and .show() the p el's with the corresponding name
       e.preventDefault();
-      let $el = $(e.target);
-      $el.next().show();
+      let $input = $(e.target);
+      $input.next().show();
+    },
+
+    submitNewContact: function(e) {
+      e.preventDefault();
+      const form = $(e.target).closest("form")[0];
+      const result = this.validateForm(form);
+
+      if(result) {
+        app.submitContact(result);
+      }
+    },
+
+    respondContactsLoaded: function() {
+      this.setNextId();
+      this.populateContactsGallery();
+      $("button#editContact").on("click", this.beginContactEdit.bind(this));
+      $("button#delete").on("click", this.startDeleteContact.bind(this));
     },
 
     refresh: function() {
@@ -113,11 +172,8 @@ $(function() {
     init: function() {
       this.createAddContactForm();
       this.refresh();
-      //this.createAddContactForm();
       //this.createEditContactForm();
-      
-      //this.bindEventListeners()
-      //return this;
+      this.bindEventListeners();
     }
 
     /* responsibilities:
@@ -133,6 +189,16 @@ $(function() {
 
   let app = {
 
+    submitContact: function(contacObj) {
+      let data = JSON.stringify(contacObj);
+      api.saveAContact(data);
+    },
+
+    deleteContact: function(id) {
+      id = `${id}`;
+      api.deleteAContact(id);
+    }
+
   }
 
   let api = {
@@ -142,15 +208,12 @@ $(function() {
         method: "GET",
         success: function(data, status) {
           contacts = data;
-          ui.populateContactsGallery();
+          ui.respondContactsLoaded();
         }
       });
     },
 
     saveAContact: function(data) {
-      // must be called from app obj, which will call it when ui validates submission form
-      //  and calls the app to submit the data.
-
       $.ajax("/api/contacts", {
         method: "POST",
         data: data,
@@ -159,14 +222,21 @@ $(function() {
           "Content-Type": "application/json",
         },
         success: function(data, status) {
+          console.log('suc');
           ui.refresh();
         }
       });
 
     },
 
-    deleteAContact: function() {
-
+    deleteAContact: function(id) {
+      $.ajax(`api/contacts/${id}`, {
+        method: "DELETE",
+        success: function(data, status) {
+          console.log('suc');
+          ui.refresh();
+        }
+      });
     },
 
     updateAContact: function() {
@@ -176,5 +246,8 @@ $(function() {
   }
 
   ui.init();
-
 });
+
+
+
+

@@ -1,51 +1,30 @@
 [
   {
-    "id": 1,
-    "full_name": "Naveed Fida",
-    "email": "nf@example.com",
-    "phone_number": "12345678901",
-    "tags": "work,friend"
+    "full_name": "Nathan Classen",
+    "phone_number": "918-899-5352",
+    "email": "hayes@example.com",
+    "tags": null,
+    "id": 4
   },
   {
-    "id": 2,
-    "full_name": "Victor Reyes",
-    "email": "vpr@example.com",
-    "phone_number": "09876543210",
-    "tags": "work,friend"
+    "full_name": "Tim Bim",
+    "phone_number": "918-555-5777",
+    "email": "timbo@bim.me",
+    "tags": null,
+    "id": 5
   },
   {
-    "id": 3,
     "full_name": "Pete Hanson",
+    "phone_number": "405-555-5437",
     "email": "ph@example.com",
-    "phone_number": "54321098761",
-    "tags": null
+    "tags": null,
+    "id": 6
   },
   {
-    "id": 4,
-    "full_name": "John Doe",
-    "email": "jdoe@example.com",
-    "phone_number": "9185553423",
-    "tags": null
-  },
-  {
-    "id": 2,
-    "full_name": "Victor Reyes",
-    "email": "vpr@example.com",
-    "phone_number": "09876543210",
-    "tags": "work,friend"
-  },
-  {
-    "id": 3,
-    "full_name": "Pete Hanson",
-    "email": "ph@example.com",
-    "phone_number": "54321098761",
-    "tags": null
-  },
-  {
-    "id": 4,
-    "full_name": "John Doe",
-    "email": "jdoe@example.com",
-    "phone_number": "9185553423",
-    "tags": null
+    "full_name": "Gregory Mathais",
+    "phone_number": "456-817-0009",
+    "email": "gman@titan.metal",
+    "tags": null,
+    "id": 7
   }
 ]
