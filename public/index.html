@@ -21,9 +21,7 @@
       <input id="searchBox" type="text" name="search" placeholder="Search">
       <input id="tagInput" type="text" placeholder="tag name" name="tag">
       <button id="addTag">add tag</button>
-      <select>
-        
-      </select>
+      <button id="filterByTag">filter by tags</button>
     </div>
 
     <div id="contactsGallery" class="actionPanel" hidden></div>
@@ -53,17 +51,17 @@
     <script id="formTemplate" type="text/x-handlebars">
       <div id="addContactDiv">
         <h1>{{heading}}</h1>
-        <form>
+        <form id="{{formType}}" data-id="{{#if id}}{{id}}{{/if}}">
           <label for="fullNameInput">Full Name:</label>
-          <input id="fullNameInput" type="text" name="full_name" placeholder="{{#if full_name}} {{full_name}} {{/if}}" required>
+          <input id="fullNameInput" type="text" name="full_name" value="{{#if full_name}}{{full_name}}{{/if}}" required>
           <p class="error" hidden>Please enter a name</p>
           <br>
           <label for="emailInput">Email address:</label>
-          <input id="emailInput" type="text" name="email" placeholder="{{#if email}} {{email}} {{/if}}" required pattern=".+@.+">
+          <input id="emailInput" type="text" name="email" value="{{#if email}}{{email}}{{/if}}" required pattern=".+@.+">
           <p class="error" hidden>Please enter a properly formatted email (email@example.com)</p>
           <br>
           <label for="phoneNumberInput">Telephone number:</label>
-          <input id="phoneNumberInput" type="text" name="phone_number" placeholder="{{#if phone_number}} {{phone_number}} {{/if}}" required pattern="\d{3}-\d{3}-\d{4}">
+          <input id="phoneNumberInput" type="text" name="phone_number" value="{{#if phone_number}}{{phone_number}}{{/if}}" required pattern="\d{3}-\d{3}-\d{4}">
           <p class="error" hidden>Please enter a properly formatted phone number (555-555-5555)</p>
           <button id="{{formType}}ContactSubmitButton">Submit</button>
           <button id="cancelButton">Cancel</button>

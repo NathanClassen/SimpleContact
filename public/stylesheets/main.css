@@ -18,7 +18,7 @@ header {
 
 button {
   background: transparent;
-  border: 1px solid #45a;
+  border: 0.5px solid #45a;
   border-radius: 5px;
   color: #45a;
 }
@@ -69,7 +69,7 @@ header h3 {
 }
 
 div#actions {
-  background: linear-gradient(#ffe, #fff);
+  background: linear-gradient(#ededfd, #fcfcfc);
   border: 0.7px solid #aaa;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
@@ -124,7 +124,7 @@ div#pipe {
 }
 
 #actions #tagInput {
-  border: 1px solid #ddd;
+  border: 0.5px solid #aaa;
   border-radius: 5px;
   height: 35px;
   margin-left: 25px;
@@ -132,12 +132,14 @@ div#pipe {
   width: 20%;
 }
 
-#actions button#addTag  {
+#actions #filterByTag {
   height: 35px;
+  min-width: 80px;
   width: 10%;
 }
 
-#actions select {
+#actions button#addTag  {
+  height: 35px;
   width: 10%;
 }
 
@@ -145,7 +147,7 @@ div#pipe {
 
 
 div.actionPanel {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #aaa;
   margin: 0 auto;
   width: 1176px;
 }
@@ -159,7 +161,7 @@ div.form form {
 }
 
 div.form h1 {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #aaa;
   margin-bottom: 40px;
   padding: 20px 0;
   text-align: center;
@@ -173,7 +175,7 @@ div.form label {
 }
 
 div.form input {
-  border: 1px solid #ddd;
+  border: 1px solid #aaa;
   border-radius: 5px;
   box-sizing: border-box;
   height: 40px;

@@ -1,7 +1,7 @@
 [
   {
     "full_name": "Nathan Classen",
-    "phone_number": "918-899-5352",
+    "phone_number": "307-899-5352",
     "email": "hayes@example.com",
     "tags": null,
     "id": 4
@@ -14,17 +14,31 @@
     "id": 5
   },
   {
-    "full_name": "Pete Hanson",
-    "phone_number": "405-555-5437",
-    "email": "ph@example.com",
-    "tags": null,
-    "id": 6
-  },
-  {
     "full_name": "Gregory Mathais",
     "phone_number": "456-817-0009",
     "email": "gman@titan.metal",
     "tags": null,
     "id": 7
+  },
+  {
+    "full_name": "John F. Kennedy",
+    "phone_number": "765-444-5555",
+    "email": "jfk@whitehouse.gov",
+    "tags": null,
+    "id": 8
+  },
+  {
+    "full_name": "Megan Hilti",
+    "phone_number": "384-599-5998",
+    "email": "mhilt@grams.vim",
+    "tags": null,
+    "id": 9
+  },
+  {
+    "full_name": "Greg Bahnsen",
+    "phone_number": "111-333-4444",
+    "email": "jbean@presup.org",
+    "tags": null,
+    "id": 10
   }
 ]
