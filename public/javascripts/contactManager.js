@@ -78,7 +78,6 @@ $(function() {
           this.tagBank.push(tagName);
         }
       }
-
     },
 
     showEditContactForm: function() {
@@ -137,7 +136,6 @@ $(function() {
       setTimeout(function() {
         $("#addContactForm").slideDown();
       }, 500)
-
       this.selectedTags = [];
       $("#addContactForm input").off().on("invalid", this.handleInvalidInput);
       $("button#addTag").off().on("click", this.addTag.bind(this));
@@ -198,10 +196,8 @@ $(function() {
       let tagName = (tag.text());
       this.toggleTagIsSelected(tagName);
       tag.toggleClass("activeTag");
-      // find all tagged contact divs and give them appropriate styling
-      // styleTaggedContacts
       this.populateContactsGallery();
-      //last thing will be to re populate gallery, styles need to be on divs at this point
+      
     },
 
     displayNoContacts: function() {
@@ -242,7 +238,7 @@ $(function() {
       }
       $("#noContacts").remove();
       let visibleContacts = contacts;
-      if(this.filter || this.selectedTags.length > 0) { // something is search bar or tags active
+      if(this.filter || this.selectedTags.length > 0) { 
         visibleContacts = this.filteredContacts();
       }
       $("#contactList").remove();
@@ -289,7 +285,6 @@ $(function() {
     init: function() {
       this.createAddContactForm();
       this.refresh();
-      //this.createEditContactForm();
       this.bindEventListeners();
     }
   }
@@ -363,12 +358,7 @@ $(function() {
         }
       });
     },
-
   }
 
   ui.init();
 });
-
-
-
-
