@@ -193,10 +193,6 @@ $(function() {
       }
     },
 
-    styleTaggedContacts: function() {
-
-    },
-
     tagClickPrototype: function(e) {
       let tag = $(e.target);
       let tagName = (tag.text());
