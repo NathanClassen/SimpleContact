@@ -19,10 +19,17 @@
       <button id="addContact">Add Contact</button>
       <div id="pipe"></div>
       <input id="searchBox" type="text" name="search" placeholder="Search">
-      <input id="tagInput" type="text" placeholder="tag name" name="tag">
-      <button id="addTag">add tag</button>
       <button id="filterByTag">filter by tags</button>
     </div>
+
+    <div id="tagCloud" hidden></div>
+
+    <script id="tagCloudTemplate" type="text/x-handlebars">
+      <button id="closeTags">X</button>
+      {{#each tags}}
+        <span id="tag">{{tag}}</span>
+      {{/each}}
+    </script>
 
     <div id="contactsGallery" class="actionPanel" hidden></div>
 
@@ -63,7 +70,16 @@
           <label for="phoneNumberInput">Telephone number:</label>
           <input id="phoneNumberInput" type="text" name="phone_number" value="{{#if phone_number}}{{phone_number}}{{/if}}" required pattern="\d{3}-\d{3}-\d{4}">
           <p class="error" hidden>Please enter a properly formatted phone number (555-555-5555)</p>
-          <button id="{{formType}}ContactSubmitButton">Submit</button>
+          
+
+
+          <input id="{{formType}}TagInput" type="text" placeholder="tag name" name="tag">
+          <button id="addTag">add/remove tag</button>
+
+
+
+          <button id="{{formType}}ContactSubmitButton">
+          Submit</button>
           <button id="cancelButton">Cancel</button>
         </form>
       </div>

@@ -1,44 +1,16 @@
 [
   {
-    "full_name": "Nathan Classen",
-    "phone_number": "307-899-5352",
-    "email": "hayes@example.com",
-    "tags": null,
-    "id": 4
-  },
-  {
-    "full_name": "Tim Bim",
-    "phone_number": "918-555-5777",
-    "email": "timbo@bim.me",
-    "tags": null,
-    "id": 5
-  },
-  {
     "full_name": "Gregory Mathais",
-    "phone_number": "456-817-0009",
+    "phone_number": "818-020-1314",
     "email": "gman@titan.metal",
-    "tags": null,
-    "id": 7
+    "tags": "engineering,work",
+    "id": 1
   },
   {
-    "full_name": "John F. Kennedy",
+    "full_name": "Navin R Johnson",
     "phone_number": "765-444-5555",
-    "email": "jfk@whitehouse.gov",
-    "tags": null,
-    "id": 8
-  },
-  {
-    "full_name": "Megan Hilti",
-    "phone_number": "384-599-5998",
-    "email": "mhilt@grams.vim",
-    "tags": null,
-    "id": 9
-  },
-  {
-    "full_name": "Greg Bahnsen",
-    "phone_number": "111-333-4444",
-    "email": "jbean@presup.org",
-    "tags": null,
-    "id": 10
+    "email": "yomat@sotu.me",
+    "tags": "devTeam",
+    "id": 2
   }
 ]
