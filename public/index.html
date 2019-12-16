@@ -15,14 +15,8 @@
       <h1>Contact Manager</h1>
     </header>
 
-    <div id="actions">
-      <button id="addContact">Add Contact</button>
-      <div id="pipe"></div>
-      <input id="searchBox" type="text" name="search" placeholder="Search">
-      <button id="filterByTag">filter by tags</button>
-    </div>
-
     <div id="tagCloud" hidden></div>
+    <div id="divider" hidden></div>
 
     <script id="tagCloudTemplate" type="text/x-handlebars">
       <button id="closeTags">X</button>
@@ -31,7 +25,14 @@
       {{/each}}
     </script>
 
-    <div id="contactsGallery" class="actionPanel" hidden></div>
+    <div id="contactsGallery" class="actionPanel" hidden>
+      <div id="actions">
+        <button id="addContact">Add Contact</button>
+        <div id="pipe"></div>
+        <input id="searchBox" type="text" name="search" placeholder="Search">
+        <button id="filterByTag">filter by tags</button>
+      </div>
+    </div>
 
     <script id="contactsTemplate" type="text/x-handlebars">
       <ul id="contactList">
@@ -56,7 +57,7 @@
     <div id="editContactForm" class="actionPanel form" hidden></div>
 
     <script id="formTemplate" type="text/x-handlebars">
-      <div id="addContactDiv">
+      <div>
         <h1>{{heading}}</h1>
         <form id="{{formType}}" data-id="{{#if id}}{{id}}{{/if}}">
           <label for="fullNameInput">Full Name:</label>

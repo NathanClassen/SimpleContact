@@ -1,16 +1,16 @@
 [
   {
-    "full_name": "Gregory Mathais",
-    "phone_number": "818-020-1314",
-    "email": "gman@titan.metal",
-    "tags": "engineering,work",
+    "full_name": "John Doe",
+    "phone_number": "555-867-5309",
+    "email": "jdoe@example.com",
+    "tags": "friends,work",
     "id": 1
   },
   {
-    "full_name": "Navin R Johnson",
-    "phone_number": "765-444-5555",
-    "email": "yomat@sotu.me",
-    "tags": "devTeam",
+    "full_name": "Jane Doe",
+    "phone_number": "555-867-5309",
+    "email": "jadoe@example.com",
+    "tags": "",
     "id": 2
   }
 ]

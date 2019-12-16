@@ -22,6 +22,7 @@ $(function() {
       $("#cancelButton").on("click", this.cancelContactManagement.bind(this));
       $("#filterByTag").on("click", this.toggleTagCloud);
       $("#tagCloud button").on("click", this.toggleTagCloud);
+      $("#divider").on("click", this.toggleTagCloud);
     },
 
     bindEditFormListeners: function() {
@@ -33,6 +34,7 @@ $(function() {
 
     toggleTagCloud: function(e) {
       e.preventDefault();
+      $("#divider").fadeToggle(300);
       $("#tagCloud").fadeToggle(300);
     },
 
@@ -50,8 +52,9 @@ $(function() {
     },
 
     startDeleteContact: function(e) {
+      this.selectedTags = [];
       let id = +$(e.target).closest("div").attr("id");
-      let result = window.confirm("Delete contact? " + id);
+      let result = window.confirm("Delete contact?");
       if (result) { application.deleteContact(id) };
     },
 
@@ -66,7 +69,8 @@ $(function() {
     addTag: function(e) {
       e.preventDefault();
       let formType = $(e.target).parent().attr("id");
-      let tagName = $(`input#${formType}TagInput`).val().trim();
+      let input = $(`input#${formType}TagInput`);
+      let tagName = input.val().trim();
       if (tagName) {
         if(this.tagBankHas(tagName)) {
           this.tagBank = this.tagBank.filter(tag => tag !== tagName);
@@ -75,7 +79,6 @@ $(function() {
         }
       }
 
-      console.log(this.tagBank);
     },
 
     showEditContactForm: function() {
@@ -101,6 +104,7 @@ $(function() {
     },
 
     beginContactEdit: function(e) {
+      this.selectedTags = [];
       let contactId = +$(e.target).closest("div").attr("id");
       this.createEditContactForm(this.getContactById(contactId));
     },
@@ -124,7 +128,6 @@ $(function() {
       setTimeout(function() {
         self.$contactsGallery.slideDown();
       }, 500);
-
       $("button#editContact").on("click", this.beginContactEdit.bind(this));
       $("button#delete").on("click", this.startDeleteContact.bind(this));
     },
@@ -135,12 +138,12 @@ $(function() {
         $("#addContactForm").slideDown();
       }, 500)
 
+      this.selectedTags = [];
       $("#addContactForm input").off().on("invalid", this.handleInvalidInput);
       $("button#addTag").off().on("click", this.addTag.bind(this));
     },
 
     stringifyTagBank: function() {
-      console.log('from stringifyTagBank' + this.tagBank.join(','));
       return this.tagBank.join(',');
     },
 
@@ -177,7 +180,7 @@ $(function() {
       let result = this.validateForm(form);
       if(result) {
         this.tagBank = [];
-
+        form.reset();
         entryType === "add" ? application.submitContact(result) : application.submitEdits(result, id);
       }
     },
@@ -191,7 +194,7 @@ $(function() {
     },
 
     styleTaggedContacts: function() {
-      
+
     },
 
     tagClickPrototype: function(e) {
@@ -207,7 +210,7 @@ $(function() {
 
     displayNoContacts: function() {
       let div = $("<div id='noContacts'><h1>there are no contacts</h1></div>");
-      this.$contactsGallery.html(div);
+      this.$contactsGallery.append(div);
       this.showContactsGallery();
     },
 
@@ -241,11 +244,13 @@ $(function() {
         this.displayNoContacts();
         return;
       }
+      $("#noContacts").remove();
       let visibleContacts = contacts;
       if(this.filter || this.selectedTags.length > 0) { // something is search bar or tags active
         visibleContacts = this.filteredContacts();
       }
-      this.$contactsGallery.html(contactsTemplate({contacts: visibleContacts}));
+      $("#contactList").remove();
+      this.$contactsGallery.append(contactsTemplate({contacts: visibleContacts}));
       this.showContactsGallery();
     },
 
@@ -255,7 +260,12 @@ $(function() {
       contacts.forEach(function(contact) {
         if(contact.tags) {
           let contactsTags = contact.tags.split(',');
-          contactsTags.forEach(tagName => self.tagFilters.push({tag: tagName}));
+          contactsTags.forEach(function(tagName) {
+            if(!self.tagFilters.map(obj => obj.tag).includes(tagName)) {
+              self.tagFilters.push({tag: tagName});
+
+            }
+          });
         }
       });
       this.refreshTagCloud();
@@ -297,7 +307,6 @@ $(function() {
     },
 
     submitEdits: function(contactObj, id) {
-      console.log(id + ": check");
       let data = JSON.stringify(contactObj);
       api.updateAContact(id, data);
     },
@@ -322,7 +331,6 @@ $(function() {
     },
 
     saveAContact: function(data) {
-      console.log(data);
       $.ajax("/api/contacts", {
         method: "POST",
         data: data,
@@ -331,7 +339,6 @@ $(function() {
           "Content-Type": "application/json",
         },
         success: function(data, status) {
-          console.log('suc');
           ui.refresh();
         }
       });
@@ -342,7 +349,6 @@ $(function() {
       $.ajax(`api/contacts/${id}`, {
         method: "DELETE",
         success: function(data, status) {
-          console.log('suc');
           ui.refresh();
         }
       });
@@ -357,7 +363,6 @@ $(function() {
           "Content-Type": "application/json",
         },
         success: function(data, status) {
-          console.log('edit suc');
           ui.refresh();
         }
       });
